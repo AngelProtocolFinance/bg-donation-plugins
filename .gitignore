@@ -1,1 +1,2 @@
-build
+# ignore build artifacts & output binaries
+/out
