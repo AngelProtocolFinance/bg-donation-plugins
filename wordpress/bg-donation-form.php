@@ -62,6 +62,7 @@ function bg_donation_form_shortcode( $atts = [] ) {
 
 	// starting portion of final output string
 	$output_head = '<iframe id="bg_donation_form" src="';
+
 	// query string URL
 	$q = 'https://' . trim($bg_atts['env']) . 'better.giving/donate-widget/';
 
@@ -131,7 +132,7 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	// close off the iframe
 	$output_tail .= '></iframe>';
 
-	return $output_head . esc_url($q, ['http', 'https']) . $output_end;
+	return $output_head . esc_url($q, ['http', 'https']) . $output_tail;
 }
 
 function shortcodes_init() {
