@@ -21,8 +21,8 @@
 /**
  * The [bg_donation_form] shortcode.
  *
- * Displays a Better Giving donation via an iFrame when the shortcode is invoked.
- * Takes user-defined attributes to customize from defaults.
+ * Provides a shortcode to allow nonprofits a simple way to display the Better Giving donation form.
+ * Shortcode takes user-defined attributes, allowing users the ability to customize the form's look and feel.
  *
  * @param array  $atts    Shortcode attributes. Default empty.
  * @return string Shortcode output.
