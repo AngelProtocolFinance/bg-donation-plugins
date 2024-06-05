@@ -32,21 +32,20 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	$atts = array_change_key_case( (array) $atts, CASE_LOWER );
 
 	// override the default attributes with user-passed attributes (if keys match)
-	$bg_atts = shortcode_atts(
-		array(
-		'id' => 0, // prevents widget from rendering if not provided!
-		'currentsplitpct' => null,
-		'splitdisabled' => null,
-		'showdescription' => null,
-		'showtitle' => null,
+	$bg_atts = shortcode_atts(array(
+		'id' => 0, // prevents widget from rendering if is not provided
+		'currentsplitpct' => 50, // marketplace default
+		'splitdisabled' => 0,
+		'showdescription' => 1,
+		'showtitle' => 1,
 		'description' => null,
 		'title' => null,
 		'methods' => null,
-		'accentprimary' => null,
-		'accentsecondary' => null,
-		'env' => null
+		'accentprimary' => '',
+		'accentsecondary' => '',
+		'env' => ''
 	), $atts);
-	
+
 	/*
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* Set all the user-definable parameters
@@ -73,14 +72,19 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	*/
 	$q .= $bg_atts['id'] . '?';
 	if (is_int($bg_atts['currentsplitpct'])) {
-		$q .= '&liquidSplitPct=' . $bg_atts['currentsplitpct'];
+		$q .= 'liquidSplitPct=' . $bg_atts['currentsplitpct'];
 	} else {
-		$q .= '&liquidSplitPct=50'; // marketplace default
+		$q .= 'liquidSplitPct=50'; // marketplace default
 	}
 	if ($bg_atts['splitdisabled'] === 1) {
 		$q .= '&splitDisabled=true';
 	} else {
 		$q .= '&splitDisabled=false';
+	}
+	if ($bg_atts['showdescription'] === 1) {
+		$q .= '&isDescriptionTextShown=true';
+	} else {
+		$q .= '&isDescriptionTextShown=false';
 	}
 
 	/*
@@ -88,17 +92,14 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	* Optional Fields
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
-	if ($bg_atts['showdescription'] === 1) {
-		$q .= '&isDescriptionTextShown=true';
-	}
 	if ($bg_atts['showtitle'] === 1) {
 		$q .= '&isTitleShown=true';
 	}
 	if (!empty($bg_atts['title'])) {
-		$q .= '&title="' . esc_attr(trim($bg_atts['title'])) . '"';
+		$q .= '&title=' . esc_attr(trim($bg_atts['title']));
 	}
 	if (!empty($bg_atts['description'])) {
-		$q .= '&description="' . esc_attr(trim($bg_atts['description'])) . '"';
+		$q .= '&description=' . esc_attr(trim($bg_atts['description']));
 	}
 
 	// check user passed donation methods for validity
@@ -108,31 +109,35 @@ function bg_donation_form_shortcode( $atts = [] ) {
 		$u_methods = explode(',', trim($bg_atts['methods']));
 		$u_methods_final = array_intersect($donation_methods, $u_methods);
 		if (!empty($u_methods_final)) {
-			$q .= '&methods=' . implode(",", $u_methods_final);
+			$q .= '&methods=' . esc_attr(implode(",", $u_methods_final));
 		}
 	}
 
 	// Use RegEx to check if valid HEX values passed by user for accent colors
 	// NOTE: preg_match returns 1 if match, 0 if no match, when no output array is passed along
-	$hex_regex = '/^#(?:(?:[\da-fA-f]{3,5}))$/';
-	if (!empty($bg_atts['accentprimary']) && preg_match($hex_regex, trim($bg_atts['accentprimary'])) == 1) {
-		$q .= '&accentPrimary=' . trim($bg_atts['accentprimary']);
+	$hex_regex = '/^#(?:(?:[\da-fA-F]{3,6}))$/';
+	if (preg_match($hex_regex, trim($bg_atts['accentprimary'])) == 1) {
+		$q .= '&accentPrimary=' . esc_attr(trim($bg_atts['accentprimary']));
+	} else {
+		$q .= '&accentPrimary=' . esc_attr('#2D89C8'); // default BG color
 	}
-	if (!empty($bg_atts['accentsecondary']) && preg_match($hex_regex, trim($bg_atts['accentsecondary'])) == 1) {
-		$q .= '&accentSecondary=' . trim($bg_atts['accentsecondary']);
+	if (preg_match($hex_regex, trim($bg_atts['accentsecondary'])) == 1) {
+		$q .= '&accentSecondary=' . esc_attr(trim($bg_atts['accentsecondary']));
+	} else {
+		$q .= '&accentSecondary=' . esc_attr('#E6F1F9'); // default BG color
 	}
 
 	// close off the query string
 	$q .= '"';
 
 	// Set the fixed parameters
-	$output_tail = ' width=700';
-	$output_tail .= ' height=900';
-	$output_tail .= ' style="' . esc_attr('border: 0px') . '"';
+	$output_tail = ' width="700"';
+	$output_tail .= ' height="900"';
+	$output_tail .= ' style="border: 0px;"';
 	// close off the iframe
 	$output_tail .= '></iframe>';
 
-	return $output_head . esc_url($q, ['http', 'https']) . $output_tail;
+	return $output_head . $q . $output_tail;
 }
 
 function shortcodes_init() {
