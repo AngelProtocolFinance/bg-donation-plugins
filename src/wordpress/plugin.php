@@ -34,7 +34,7 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	// override the default attributes with user-passed attributes (if keys match)
 	$bg_atts = shortcode_atts(array(
 		'id' => 0, // prevents widget from rendering if is not provided
-		'currentsplitpct' => 50, // marketplace default
+		'currentsplitpct' => null,
 		'splitdisabled' => 0,
 		'showdescription' => 1,
 		'showtitle' => 1,
@@ -43,7 +43,8 @@ function bg_donation_form_shortcode( $atts = [] ) {
 		'methods' => null,
 		'accentprimary' => '',
 		'accentsecondary' => '',
-		'env' => ''
+		'env' => '',
+		'program' => null
 	), $atts);
 
 	/*
@@ -70,25 +71,27 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	* REQUIRED FIELDS
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
-	// Nonprofit ID
+	// Nonprofit ID (int)
 	$q .= $bg_atts['id'] . '?';
 	// Default Current Split percentage
-	if (is_int($bg_atts['currentsplitpct'])) {
-		$q .= 'liquidSplitPct=' . $bg_atts['currentsplitpct'];
+	if (is_numeric($bg_atts['currentsplitpct'])) {
+		$q .= 'liquidSplitPct=' . intval(trim($bg_atts['currentsplitpct']));
 	} else {
 		$q .= 'liquidSplitPct=50'; // marketplace default
 	}
 	// Disable split screen
-	if ($bg_atts['splitdisabled'] === 1) {
+	$disable_split = trim($bg_atts['splitdisabled']);
+	if (is_numeric($disable_split) && intval($disable_split) === 1) {
 		$q .= '&splitDisabled=true';
 	} else {
 		$q .= '&splitDisabled=false';
 	}
 	// Show/Hide Description
-	if ($bg_atts['showdescription'] === 1) {
-		$q .= '&isDescriptionTextShown=true';
-	} else {
+	$show_descr = trim($bg_atts['showdescription']);
+	if (is_numeric($show_descr) && intval($show_descr) === 0) {
 		$q .= '&isDescriptionTextShown=false';
+	} else {
+		$q .= '&isDescriptionTextShown=true';
 	}
 
 	/*
@@ -96,11 +99,16 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	* OPTIONAL FIELDS
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
+	// Program ID (UUID string)
+	if (!empty($bg_atts['program'])) {
+		$q .= '&programId=' . trim($bg_atts['program']);
+	}
 	// Show/Hide Title
-	if ($bg_atts['showtitle'] === 1) {
-		$q .= '&isTitleShown=true';
-	} else {
+	$show_title = trim($bg_atts['showtitle']);
+	if (is_numeric($show_title) && intval($show_title) === 0) {
 		$q .= '&isTitleShown=false';
+	} else {
+		$q .= '&isTitleShown=true';
 	}
 	// Custom Title
 	if (!empty($bg_atts['title'])) {
