@@ -51,8 +51,8 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	* Set all the user-definable parameters
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
-	// allow staging environment to be accessed for testing purposes
-	// not something most users will need
+	// Allow staging environment to be accessed for testing purposes
+	// NOTE: not something most users will need
 	if (trim($bg_atts['env']) === "staging") {
 		$bg_atts['env'] = 'staging.';
 	} else {
@@ -67,20 +67,24 @@ function bg_donation_form_shortcode( $atts = [] ) {
 
 	/*
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	* Required Fields
+	* REQUIRED FIELDS
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
+	// Nonprofit ID
 	$q .= $bg_atts['id'] . '?';
+	// Default Current Split percentage
 	if (is_int($bg_atts['currentsplitpct'])) {
 		$q .= 'liquidSplitPct=' . $bg_atts['currentsplitpct'];
 	} else {
 		$q .= 'liquidSplitPct=50'; // marketplace default
 	}
+	// Disable split screen
 	if ($bg_atts['splitdisabled'] === 1) {
 		$q .= '&splitDisabled=true';
 	} else {
 		$q .= '&splitDisabled=false';
 	}
+	// Show/Hide Description
 	if ($bg_atts['showdescription'] === 1) {
 		$q .= '&isDescriptionTextShown=true';
 	} else {
@@ -89,17 +93,20 @@ function bg_donation_form_shortcode( $atts = [] ) {
 
 	/*
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	* Optional Fields
+	* OPTIONAL FIELDS
 	* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
+	// Show/Hide Title
 	if ($bg_atts['showtitle'] === 1) {
 		$q .= '&isTitleShown=true';
 	} else {
 		$q .= '&isTitleShown=false';
 	}
+	// Custom Title
 	if (!empty($bg_atts['title'])) {
 		$q .= '&title=' . urlencode(trim($bg_atts['title']));
 	}
+	// Custom Description
 	if (!empty($bg_atts['description'])) {
 		$q .= '&description=' . urlencode(trim($bg_atts['description']));
 	}
