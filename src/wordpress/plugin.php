@@ -133,12 +133,12 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	// Use RegEx to check if valid HEX values passed by user for accent colors
 	// NOTE: preg_match returns 1 if match, 0 if no match, when no output array is passed along
 	$hex_regex = '/^#(?:(?:[\da-fA-F]{3,6}))$/';
-	if (preg_match($hex_regex, trim($bg_atts['accentprimary'])) == 1) {
+	if (preg_match($hex_regex, trim($bg_atts['accentprimary'])) === 1) {
 		$q .= '&accentPrimary=' . urlencode(trim($bg_atts['accentprimary']));
 	} else {
 		$q .= '&accentPrimary=' . urlencode('#2D89C8'); // default BG color
 	}
-	if (preg_match($hex_regex, trim($bg_atts['accentsecondary'])) == 1) {
+	if (preg_match($hex_regex, trim($bg_atts['accentsecondary'])) === 1) {
 		$q .= '&accentSecondary=' . urlencode(trim($bg_atts['accentsecondary']));
 	} else {
 		$q .= '&accentSecondary=' . urlencode('#E6F1F9'); // default BG color
