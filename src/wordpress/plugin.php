@@ -94,12 +94,14 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	*/
 	if ($bg_atts['showtitle'] === 1) {
 		$q .= '&isTitleShown=true';
+	} else {
+		$q .= '&isTitleShown=false';
 	}
 	if (!empty($bg_atts['title'])) {
-		$q .= '&title=' . esc_attr(trim($bg_atts['title']));
+		$q .= '&title=' . urlencode(trim($bg_atts['title']));
 	}
 	if (!empty($bg_atts['description'])) {
-		$q .= '&description=' . esc_attr(trim($bg_atts['description']));
+		$q .= '&description=' . urlencode(trim($bg_atts['description']));
 	}
 
 	// check user passed donation methods for validity
@@ -109,7 +111,7 @@ function bg_donation_form_shortcode( $atts = [] ) {
 		$u_methods = explode(',', trim($bg_atts['methods']));
 		$u_methods_final = array_intersect($donation_methods, $u_methods);
 		if (!empty($u_methods_final)) {
-			$q .= '&methods=' . esc_attr(implode(",", $u_methods_final));
+			$q .= '&methods=' . urlencode(implode(",", $u_methods_final));
 		}
 	}
 
@@ -117,14 +119,14 @@ function bg_donation_form_shortcode( $atts = [] ) {
 	// NOTE: preg_match returns 1 if match, 0 if no match, when no output array is passed along
 	$hex_regex = '/^#(?:(?:[\da-fA-F]{3,6}))$/';
 	if (preg_match($hex_regex, trim($bg_atts['accentprimary'])) == 1) {
-		$q .= '&accentPrimary=' . esc_attr(trim($bg_atts['accentprimary']));
+		$q .= '&accentPrimary=' . urlencode(trim($bg_atts['accentprimary']));
 	} else {
-		$q .= '&accentPrimary=' . esc_attr('#2D89C8'); // default BG color
+		$q .= '&accentPrimary=' . urlencode('#2D89C8'); // default BG color
 	}
 	if (preg_match($hex_regex, trim($bg_atts['accentsecondary'])) == 1) {
-		$q .= '&accentSecondary=' . esc_attr(trim($bg_atts['accentsecondary']));
+		$q .= '&accentSecondary=' . urlencode(trim($bg_atts['accentsecondary']));
 	} else {
-		$q .= '&accentSecondary=' . esc_attr('#E6F1F9'); // default BG color
+		$q .= '&accentSecondary=' . urlencode('#E6F1F9'); // default BG color
 	}
 
 	// close off the query string
