@@ -116,7 +116,7 @@ function bg_donation_form_shortcode( $atts = [] ) {
 		// All possible BG donation method IDs (as of v2.3)
 		$donation_methods = array("stripe", "crypto", "daf", "stocks");
 		$u_methods = explode(',', trim($bg_atts['methods']));
-		$u_methods_final = array_intersect($donation_methods, $u_methods);
+		$u_methods_final = array_intersect($u_methods, $donation_methods);
 		if (!empty($u_methods_final)) {
 			$q .= '&methods=' . urlencode(implode(",", $u_methods_final));
 		}
